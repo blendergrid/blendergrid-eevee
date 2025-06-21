@@ -1,0 +1,28 @@
+name: Eevee Render
+
+mounts:
+  # Read
+  input: "s3://blendergrid-dev-us-east-1/eevee/input/"
+  scripts: "s3://blendergrid-dev-us-east-1/eevee/scripts/"
+
+  # Write
+  output: "s3://blendergrid-dev-us-east-1/eevee/output/"
+  logs: "s3://blendergrid-dev-us-east-1/eevee/logs/"
+
+arguments:
+  frame:
+    type: integer
+    min: 1
+    max: 800
+
+container:
+  image: blendergrid/blender:4.4
+
+run:
+  cmd: >
+    "${input}/temple.blend"
+    --python "${scripts}/load_settings.py"
+    --render-output "${output}/frame-####"
+    --render-frame "${frame}"
+    --
+    --settings-file "${input}/settings.json"
